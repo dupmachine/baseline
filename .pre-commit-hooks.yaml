@@ -3,3 +3,9 @@
   language: script
   entry: hooks/yamllint.sh
   types: [yaml]
+
+- id: pymarkdown
+  name: pymarkdown
+  language: script
+  entry: hooks/pymarkdown.sh
+  types: [markdown]

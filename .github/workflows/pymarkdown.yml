@@ -1,8 +1,8 @@
-name: yamllint
+name: pymarkdown
 on:
   workflow_call:
 jobs:
-  yamllint:
+  pymarkdown:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -10,5 +10,5 @@ jobs:
         with:
           repository: dupmachine/linters
           path: .linters
-      - run: pip install yamllint
-      - run: yamllint -c .linters/configs/yamllint.yml .
+      - run: pip install pymarkdownlnt
+      - run: pymarkdown --config .linters/configs/pymarkdown.json scan .
