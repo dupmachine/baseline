@@ -1,0 +1,9 @@
+name: actionlint
+description: Lint GitHub Actions workflow files using actionlint.
+runs:
+  using: composite
+  steps:
+    - run: bash <(curl -sL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+      shell: bash
+    - run: ./actionlint
+      shell: bash
