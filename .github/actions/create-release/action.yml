@@ -12,10 +12,6 @@ inputs:
     description: Path to a file to attach to the release.
     required: false
     default: ""
-  latest-tag:
-    description: Mutable release tag to update after publishing. Set to empty string to disable.
-    required: false
-    default: latest
   release-repo:
     description: GitHub repository to publish the release to. Defaults to current repository.
     required: false
@@ -68,7 +64,6 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
         REQUESTED_TAG: ${{ inputs.tag }}
         ARTIFACT_PATH: ${{ inputs.artifact-path }}
-        LATEST_TAG: ${{ inputs.latest-tag }}
         INPUT_RELEASE_REPO: ${{ inputs.release-repo }}
       run: |
         set -euo pipefail
@@ -92,26 +87,6 @@ runs:
               --title "$tag" \
               --notes-file /tmp/release-notes.md \
               --latest=false
-          fi
-        fi
-        if [ -n "$LATEST_TAG" ]; then
-          if gh release view "$LATEST_TAG" --repo "$release_repo" >/dev/null 2>&1; then
-            [ -n "$ARTIFACT_PATH" ] && gh release upload "$LATEST_TAG" "$ARTIFACT_PATH" --repo "$release_repo" --clobber
-            gh release edit "$LATEST_TAG" --repo "$release_repo" --target "$GITHUB_SHA"
-          else
-            if [ -n "$ARTIFACT_PATH" ]; then
-              gh release create "$LATEST_TAG" "$ARTIFACT_PATH" \
-                --repo "$release_repo" \
-                --target "$GITHUB_SHA" \
-                --title "$LATEST_TAG" \
-                --notes ""
-            else
-              gh release create "$LATEST_TAG" \
-                --repo "$release_repo" \
-                --target "$GITHUB_SHA" \
-                --title "$LATEST_TAG" \
-                --notes ""
-            fi
           fi
         fi
         echo "tag=$tag" >> "$GITHUB_OUTPUT"
