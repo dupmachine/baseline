@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.11] - 2026-06-13
+
+- fix changelog trailing newline in create-release action
+- remove latest mutable tag from create-release action
+- chore: update changelog for v0.0.10
+
 ## [v0.0.10] - 2026-06-13
 
 - fix CHANGELOG (last manual fix — action is now patched)
