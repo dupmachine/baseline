@@ -1,7 +1,6 @@
 name: Auto-merge Dependabot
 on:
   workflow_call:
-
 jobs:
   merge:
     if: github.actor == 'dependabot[bot]'
