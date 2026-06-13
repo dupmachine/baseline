@@ -3,7 +3,10 @@ description: Lint shell scripts using the canonical shellcheck config from basel
 runs:
   using: composite
   steps:
-    - run: sudo apt-get install -y shellcheck
+    - run: |
+        curl -fsSL https://github.com/koalaman/shellcheck/releases/download/stable/shellcheck-stable.linux.x86_64.tar.xz \
+          | tar -xJf - shellcheck-stable/shellcheck
+        sudo install shellcheck-stable/shellcheck /usr/local/bin/shellcheck
       shell: bash
     - shell: bash
       run: |
