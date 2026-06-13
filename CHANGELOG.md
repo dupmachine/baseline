@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.0.10] - 2026-06-13
+
+- fix CHANGELOG (last manual fix — action is now patched)
+- fix changelog update to preserve # Changelog header position
+- chore: update changelog for v0.0.9
+
 ## [v0.0.9] - 2026-06-13
 
 - fix changelog update to preserve # Changelog header position
