@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.0.13] - 2026-06-13
+
+- remove artifact-path from create-release action
+- rename self-calling workflows to -self suffix; add dependabot-automerge-self; document convention
+- add pre-commit config and self-update workflow
+- restore telegram-release-notify reusable workflow; add notify-release for baseline self
+- add dependabot and telegram-release-notify workflows
+- document default schedules and pre-commit autoupdate in README
+- chore: update changelog for v0.0.12
+
 ## [v0.0.12] - 2026-06-13
 
 - add pre-commit-autoupdate reusable workflow
