@@ -1,5 +1,5 @@
 name: Create GitHub release
-description: Generate AI release notes, publish a GitHub release, and update CHANGELOG.md.
+description: Generate AI release notes and publish a GitHub release.
 inputs:
   token:
     description: Token with permission to write releases and contents.
@@ -73,42 +73,3 @@ runs:
             --notes-file /tmp/release-notes.md
         fi
         echo "tag=$tag" >> "$GITHUB_OUTPUT"
-    - name: Update changelog
-      shell: bash
-      env:
-        GH_TOKEN: ${{ inputs.token }}
-        REQUESTED_TAG: ${{ inputs.tag }}
-      run: |
-        set -euo pipefail
-        tag="$REQUESTED_TAG"
-        [ -z "$tag" ] && tag="${GITHUB_SHA:0:8}"
-        echo "$tag" | grep -Eq '^v[0-9]' || exit 0
-        date=$(date -u +%Y-%m-%d)
-        notes=$(cat /tmp/release-notes.md)
-        new_entry="## [${tag}] - ${date}"$'\n\n'"${notes}"
-        file_resp=$(curl -sf \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "Accept: application/vnd.github+json" \
-          "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/CHANGELOG.md" || echo "{}")
-        current_sha=$(echo "$file_resp" | jq -r '.sha // empty')
-        current_content=$(echo "$file_resp" | jq -r '.content // empty' | base64 -d 2>/dev/null || echo "")
-        if [ -n "$current_content" ]; then
-          if printf '%s' "$current_content" | head -1 | grep -q '^# Changelog'; then
-            rest=$(printf '%s' "$current_content" | tail -n +3)
-            new_content="# Changelog"$'\n\n'"${new_entry}"$'\n\n'"${rest}"
-          else
-            new_content="${new_entry}"$'\n\n'"${current_content}"
-          fi
-        else
-          new_content="# Changelog"$'\n\n'"${new_entry}"
-        fi
-        update_payload=$(jq -n \
-          --arg message "chore: update changelog for ${tag}" \
-          --arg content "$(printf '%s\n' "$new_content" | base64 -w 0)" \
-          --arg sha "$current_sha" \
-          'if $sha == "" then {message: $message, content: $content} else {message: $message, content: $content, sha: $sha} end')
-        curl -sf -X PUT \
-          -H "Authorization: Bearer $GH_TOKEN" \
-          -H "Content-Type: application/json" \
-          "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/CHANGELOG.md" \
-          -d "$update_payload" > /dev/null
