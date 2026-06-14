@@ -1,15 +1,8 @@
 name: Dependabot Automerge
 on:
-  workflow_call:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
 jobs:
   merge:
-    if: github.actor == 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-    steps:
-      - name: Merge
-        run: gh pr merge "${{ github.event.pull_request.number }}" --merge --repo "${{ github.repository }}"
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: rubykatzen/baseline/.github/workflows/dependabot-automerge-shared.yml@v0.0.12
+    secrets: inherit

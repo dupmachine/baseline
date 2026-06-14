@@ -1,26 +1,9 @@
 name: Pre-commit Autoupdate
 on:
-  workflow_call:
+  schedule:
+    - cron: "30 21 * * *"
+  workflow_dispatch:
 jobs:
   autoupdate:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email \
-            "41898282+github-actions[bot]@users.noreply.github.com"
-      - run: pip install pre-commit
-      - run: pre-commit autoupdate
-      - name: Commit if changed
-        run: |
-          if git diff --quiet; then
-            echo "No updates."
-          else
-            git add .pre-commit-config.yaml
-            git commit -m "pre-commit autoupdate"
-            git push
-          fi
+    uses: rubykatzen/baseline/.github/workflows/pre-commit-autoupdate-shared.yml@v0.0.12
+    secrets: inherit
